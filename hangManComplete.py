@@ -80,6 +80,15 @@ while numOfGuesses > 0:
             for index in reversed(wordsList):
                 if guess not in index:
                     wordsList.remove(index)
+            #Hopefully more efficient word deleter
+            for index in reversed(wordsList):
+                count = 0
+                while count < length:
+                    wordCheck = list(index)
+                    if confirmWord[count] != ".":
+                        if confirmWord[count] != wordCheck[count]:
+                            wordsList.remove(index)
+                    count += 1
     elif confirmation == 0 and numOfGuesses != 1:
         #Deletes words with wrong guess
         for index in reversed(wordsList):
