@@ -1,8 +1,9 @@
 #I am a python and programming newbie. If you have any tips, advice, or just want to chat. Please contact me at jarrettlumsden@gmail.com
 import random
+import copy
 words = open("words.txt", 'r')
 wordsList = words.read().splitlines()
-originalList = words.read().splitlines()
+originalList = copy.deepcopy(wordsList)
 letters = {1:"a", 2:"e", 3:"i", 4:"o", 5:"u", 6:"y", 7:"b", 8:"c", 9:"d", 10:"f", 11:"g", 12:"h", 13:"j", 14:"k", 15:"l", 16:"m", 17:"n", 18:"p", 19:"q", 20:"r", 21:"s", 22:"t", 23:"v", 24:"w", 25:"x", 26:"z"}
 lettersCopy = {1:"a", 2:"e", 3:"i", 4:"o", 5:"u", 6:"y", 7:"b", 8:"c", 9:"d", 10:"f", 11:"g", 12:"h", 13:"j", 14:"k", 15:"l", 16:"m", 17:"n", 18:"p", 19:"q", 20:"r", 21:"s", 22:"t", 23:"v", 24:"w", 25:"x", 26:"z"}
 numOfGuesses = 10
@@ -10,6 +11,7 @@ length = int(input("Think of a word.\nHow many letters are in your word?: "))
 word = "." * length
 values = ""
 vowelConfirmation = 0
+confidentCheck = 123456
 #Creates number system for user
 numberSystem = ""
 numberSyst = list(range(1, length + 1))
@@ -21,15 +23,23 @@ for index in reversed(wordsList):
         wordsList.remove(index)
 #Money maker
 while numOfGuesses > 0:
+    if len(wordsList) == 1:
+        print("Is this your word? " + wordsList[0])
+        confidentCheck = int(input("Press \"1\" for yes, or \"0\" for no: "))
+        if confidentCheck == 1:
+            print("That was easy!")
+            break
     #Decides word is not in list. Adds word to text file
-    if len(wordsList) == 0:
+    if len(wordsList) == 0 or confidentCheck == 0:
         print("I give up! You win!")
         userWord = input("Please enter your word in lower-case letters: ")
         if userWord not in originalList:
             addition = open("words.txt", 'a')
             addition.write(userWord + "\n")
             addition.close()
-        print("Thank you for contributing!")
+            print("Thank you for contributing!")
+        elif userWord in originalList:
+            print("Hmm... I know that word. Either my author sucks, or you cheated!")
         break
     letterCheck = ""
     values = ""
@@ -73,14 +83,14 @@ while numOfGuesses > 0:
             print(numberSystem)
             if "." not in confirmWord:
                 print("I win! Try harder next time!")
+                if word not in originalList:
+                    addition = open("words.txt", 'a')
+                    addition.write(word + "\n")
+                    addition.close()
                 break
             print("Is there another " + guess + " in the word?")
             confirmation = int(input("Press \"1\" for yes, or \"0\" for no: "))
-            #Deletes words not containing correct guess
-            for index in reversed(wordsList):
-                if guess not in index:
-                    wordsList.remove(index)
-            #Hopefully more efficient word deleter
+            #Hopefully more efficient word deleter. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Problem!!! Does not check if there isn't more of the same letter!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             for index in reversed(wordsList):
                 count = 0
                 while count < length:
